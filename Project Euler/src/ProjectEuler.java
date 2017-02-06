@@ -47,9 +47,6 @@ public class ProjectEuler {
 		double maxProduct = 0;
 		
 		for (String zerolessInput : zerolessStrings) {
-			int debugStart, debugEnd;
-			debugStart = debugEnd = 0;
-			
 			int startIndex = 0;
 			int endIndex = 0;
 
@@ -59,7 +56,6 @@ public class ProjectEuler {
 
 				//Multiply in the value at the end of the window.
 				int intAtEndOfWindow = getIntValueFromString(endIndex, zerolessInput);
-				debugEnd = endIndex;
 				runningProduct *= intAtEndOfWindow;
 
 				//Advance the end index
@@ -69,9 +65,7 @@ public class ProjectEuler {
 				if (endIndex > windowLength) {
 					//The end index has moved on past the initial x characters. Divide out the value at the start of the window.
 					int valueAtStart = getIntValueFromString(startIndex, zerolessInput);
-					debugStart = startIndex + 1;
 					runningProduct /= valueAtStart;
-//					System.out.println("Out " + valueAtStart + " at " + startIndex);
 					
 					//Advance the start pointer
 					startIndex++;

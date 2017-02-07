@@ -1,14 +1,79 @@
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Stack;
 
 public class ProjectEuler {
 
 	public ProjectEuler() {
-		problemEight();
+//		problemEight();
+		problemFifteen();
 	}
 
+	/**
+	 * https://projecteuler.net/problem=15
+	 */
+	private void problemFifteen() {
+		final int gridSize = 20;
+
+		final Map<String, Double> cache = new HashMap<>();
+
+		// Solve recursively by finding all paths from the current starting
+		// point
+		final double allPaths = findAllPaths(gridSize, 0, 0, cache);
+		System.out.println("Problem 15: " + formatDoubleNoScientificNotation(allPaths));
+	}
+
+	/**
+	 * Recursively find all paths from the given x and y (with 0, 0 being the
+	 * top left corner) to the bottom right corner (gridSize, -gridSize)
+	 * 
+	 * @param gridSize
+	 * @param xCoord
+	 * @param yCoord
+	 * @param cache
+	 * @return
+	 */
+	private double findAllPaths(final int gridSize, final int xCoord, final int yCoord, final Map<String, Double> cache) {
+		// First of all, if we have already computed paths from this point, we
+		// can just look them up in the cache and return them
+		final String location = String.valueOf(xCoord) + String.valueOf(yCoord);
+		Double pathsFromHere = cache.get(location);
+		if (pathsFromHere != null) {
+			return pathsFromHere;
+		}
+		
+		//Base case 1 - at the bottom one away from the far corner
+		if (xCoord == gridSize -1 && yCoord == -gridSize) {
+			//Just one path from here - right
+			return 1;
+		}
+		
+		//Base case 2 - at the right edge with only one slot to go down
+		if (xCoord == gridSize && yCoord == -gridSize + 1) {
+			//Just one path from here - down.
+			return 1;
+		}
+		
+		// Otherwise, we should move one to the right and then one down and then
+		// find all paths from there
+		// First, one right
+		pathsFromHere = 0.0;
+		if (xCoord < gridSize) {
+			pathsFromHere += findAllPaths(gridSize, xCoord + 1, yCoord, cache);
+		}
+		if (yCoord > -gridSize) {
+			pathsFromHere += findAllPaths(gridSize, xCoord, yCoord - 1, cache);
+
+		}
+
+		// Save all these paths from here in the cache
+		cache.put(location, pathsFromHere);
+//		System.out.println(location + " - " + pathsFromHere);
+
+		return pathsFromHere;
+	}
 	/**
 	 * https://projecteuler.net/problem=8
 	 *
@@ -116,8 +181,7 @@ public class ProjectEuler {
 			}
 			endIndex++;
 		}
-		System.out.println("Problem Eight brute force solution: " + formatDoubleNoScientificNotation(maxProduct)
-				+ ". Time: " + elapsedTime(startTime) + " millis");
+		System.out.println("Problem Eight brute force solution: " + formatDoubleNoScientificNotation(maxProduct) + ". Time: " + elapsedTime(startTime) + " millis");
 	}
 
 	private void problemFourteen() {

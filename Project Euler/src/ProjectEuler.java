@@ -7,8 +7,64 @@ import java.util.Stack;
 public class ProjectEuler {
 
 	public ProjectEuler() {
-//		problemEight();
-		problemFifteen();
+		//		problemEight();
+		//		problemFifteen();
+		problemSixteen();
+	}
+
+	/**
+	 * https://projecteuler.net/problem=16
+	 */
+	private void problemSixteen() {
+		final int power = 1000;
+		
+		//Allocate a lot of space. Should be enough. If we fill this entire array up, we'll get an exception below.
+		final int arraySize = 500;
+		final int[] digits = new int[arraySize];
+		for (int i = 0; i < arraySize - 1; i++) {
+			//Fill the array with -1's to indicate unused digits
+			digits[i] = -1;
+		}
+		//Start with our 2 in the last spot.
+		digits[arraySize - 1] = 2;
+		
+		for (int pow = 2; pow <= power; pow++) {
+			//On each  iteration, square the number manually, starting from the lowest digit.
+			int carry = 0;
+			int i = 0;
+			for (i = arraySize - 1; i > 0 && digits[i] > -1 ; i--) {
+				//Walk through the number from the least significant end (top end of the array) upwards, until we find a -1 and manually square the value we see in each cell
+				int rememberCarry = carry;
+				
+				int digitSquared = digits[i] * 2;
+				if (digitSquared >= 10) {
+					//Carry the one...
+					digitSquared -= 10;
+					carry = 1;
+				} else {
+					carry = 0;
+				}
+				digits[i] = digitSquared + rememberCarry;
+			}
+			
+			if (carry > 0) {
+				digits[i] = carry;
+			}
+		}
+		
+		//If there are no -1's left in the array, we filled up the entire array in the loop above, which probably means some digits will fall off the edge
+		if (digits[0] > -1) {
+			throw new RuntimeException("The entire array was filled up with digits. Allocate a larger array");
+		}
+		
+		
+		//Go through the array and sum up the digits.
+		int sumOfDigits = 0;
+		for (int i = arraySize - 1; i >= 0 && digits[i] > -1; i--) {
+			sumOfDigits += digits[i];
+		}
+		
+		System.out.println("Problem Sixteen: " + sumOfDigits);
 	}
 
 	/**
@@ -43,19 +99,19 @@ public class ProjectEuler {
 		if (pathsFromHere != null) {
 			return pathsFromHere;
 		}
-		
+
 		//Base case 1 - at the bottom one away from the far corner
 		if (xCoord == gridSize -1 && yCoord == -gridSize) {
 			//Just one path from here - right
 			return 1;
 		}
-		
+
 		//Base case 2 - at the right edge with only one slot to go down
 		if (xCoord == gridSize && yCoord == -gridSize + 1) {
 			//Just one path from here - down.
 			return 1;
 		}
-		
+
 		// Otherwise, we should move one to the right and then one down and then
 		// find all paths from there
 		// First, one right
@@ -70,7 +126,7 @@ public class ProjectEuler {
 
 		// Save all these paths from here in the cache
 		cache.put(location, pathsFromHere);
-//		System.out.println(location + " - " + pathsFromHere);
+		//		System.out.println(location + " - " + pathsFromHere);
 
 		return pathsFromHere;
 	}
@@ -153,7 +209,7 @@ public class ProjectEuler {
 		}
 
 		System.out.println("Problem Eight optimized solution: " + formatDoubleNoScientificNotation(maxProduct)
-				+ ". Time: " + elapsedTime(startTime) + " millis");
+		+ ". Time: " + elapsedTime(startTime) + " millis");
 	}
 
 	/**
